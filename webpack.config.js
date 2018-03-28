@@ -1,39 +1,54 @@
 /*  eslint-disable  */
-const merge = require('webpack-merge');
-const development = require('./config/webpack.dev.config');
-const production = require('./config/webpack.prod.config');
-const path = require('path');
+const merge = require("webpack-merge");
+const development = require("./config/webpack.dev.config");
+const production = require("./config/webpack.prod.config");
+const path = require("path");
+const eslintFormatter = require("react-dev-utils/eslintFormatter");
 
 // project paths
 
 const PATH = {
 	//  not change name App
-	app: path.join(__dirname, './src/index.js'), // entry
-	build: path.resolve(__dirname, 'build') //  build
+	app: path.join(__dirname, "./src/index.js"), // entry
+	build: path.resolve(__dirname, "build") //  build
 };
 
 //  common configuration for dev and production
 
 const common = {
 	context: __dirname,
-	target: 'web',
+	target: "web",
 	output: {
-		path: PATH.build,
+		path: PATH.build
 	},
 
 	//  files extension
 
 	resolve: {
-		extensions: ['.js', '.jsx', '.json'],
-		modules: ['node_modules', path.join(__dirname, 'src')],
+		extensions: [".js", ".jsx", ".json"],
+		modules: ["node_modules", path.join(__dirname, "src")]
 	},
 
 	module: {
 		rules: [
 			{
+				test: /\.(js|jsx|mjs)$/,
+				enforce: "pre",
+				use: [
+					{
+						options: {
+							formatter: eslintFormatter,
+							eslintPath: require.resolve("eslint")
+						},
+						loader: require.resolve("eslint-loader")
+					}
+				],
+				include: path.join(__dirname, "./src")
+			},
+			{
 				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				loader: 'babel-loader'
+				loader: "babel-loader"
 			},
 			{
 				test: /\.(woff|woff2|eot|ttf)(\?v=\d+\.\d+\.\d+)$/,
@@ -43,7 +58,7 @@ const common = {
 						loader: "url-loader",
 						options: {
 							limit: 50000,
-							name: './fonts/[name].[ext]'
+							name: "./fonts/[name].[ext]"
 						}
 					}
 				]
@@ -52,16 +67,16 @@ const common = {
 				test: /\.ico$/,
 				use: [
 					{
-						loader: 'file-loader',
+						loader: "file-loader",
 						options: {
-							name: '[name].[ext]'
+							name: "[name].[ext]"
 						}
 					},
 
 					//  image optimization
 
 					{
-						loader: 'image-webpack-loader',
+						loader: "image-webpack-loader",
 						options: {
 							mozjpeg: {
 								progressive: true,
@@ -69,21 +84,21 @@ const common = {
 							},
 
 							optipng: {
-								enabled: false,
+								enabled: false
 							},
 							pngquant: {
-								quality: '65-80',
+								quality: "65-80",
 								speed: 4
 							},
 							gifsicle: {
-								interlaced: false,
+								interlaced: false
 							},
 							// the webp option will enable WEBP
 							webp: {
 								quality: 75
 							}
 						}
-					},
+					}
 				]
 			},
 			{
@@ -94,17 +109,17 @@ const common = {
 						loader: "url-loader",
 						options: {
 							limit: 10000,
-							name: './image/[name].[ext]'
+							name: "./image/[name].[ext]"
 						}
 					}
 				]
 			}
 		]
-	},
+	}
 };
 
-module.exports = function (env) {
-	if (env === 'development') {
+module.exports = function(env) {
+	if (env === "development") {
 		return merge([
 			common,
 			development,
@@ -112,25 +127,25 @@ module.exports = function (env) {
 				//  Hot-Module-Replacement
 				entry: {
 					app: [
-						'react-hot-loader/patch',
-						'webpack-dev-server/client?http://localhost:8080/',
-						'webpack/hot/only-dev-server',
+						"react-hot-loader/patch",
+						"webpack-dev-server/client?http://localhost:8080/",
+						"webpack/hot/only-dev-server",
 						PATH.app
 					]
 				}
-			},
+			}
 		]);
 	}
-	if (env === 'production') {
+	if (env === "production") {
 		return merge([
 			{
 				entry: {
 					app: PATH.app,
 					vendor: ["react"]
-				},
+				}
 			},
 			common,
 			production
-		])
+		]);
 	}
 };

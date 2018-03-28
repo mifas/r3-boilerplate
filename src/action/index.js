@@ -1,3 +1,2 @@
-const INITIAL = 'INITIAL';
-
-export default INITIAL;
+export const INITIAL = "INITIAL";
+export const SOME = "SOME";

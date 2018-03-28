@@ -1,7 +1,7 @@
-import { INITIAL } from '../../action';
+import { INITIAL } from "../../action";
 
 const INITIAL_STATE = {
-	caption: 'Start Coding Now'
+	caption: "Start Coding Now"
 };
 export default (state = INITIAL_STATE, action) => {
 	switch (action.type) {
